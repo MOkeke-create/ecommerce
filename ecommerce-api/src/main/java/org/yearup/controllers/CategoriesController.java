@@ -1,6 +1,7 @@
 package org.yearup.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -56,7 +57,7 @@ public class CategoriesController
     public List<Product> getProductsById(@PathVariable int categoryId)
     {
         // get a list of product by categoryId
-        return null;
+        return productService.listByCategoryId(categoryId);
     }
 
     // add annotation to call this method for a POST action
@@ -66,7 +67,7 @@ public class CategoriesController
     public ResponseEntity<Category> addCategory(@RequestBody Category category)
     {
         // insert the category and return it with status 201 Created
-        return null;
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.create(category));
     }
 
     // add annotation to call this method for a PUT (update) action - the url path must include the categoryId
@@ -76,7 +77,7 @@ public class CategoriesController
     public Category updateCategory(@PathVariable int id, @RequestBody Category category)
     {
         // update the category by id and return the updated category (200 OK)
-        return null;
+        return categoryService.update(id, category);
     }
 
 
@@ -87,6 +88,7 @@ public class CategoriesController
     public ResponseEntity<Void> deleteCategory(@PathVariable int id)
     {
         // delete the category by id and return status 204 No Content
-        return null;
+        categoryService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
