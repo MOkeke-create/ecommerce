@@ -23,10 +23,10 @@ public class CategoryService
         return categoryRepository.findAll();
     }
 
-    public Optional<Category> getById(int categoryId)
+    public Optional<Category> getById(int id)
     {
         // get category by id
-        return categoryRepository.findById(categoryId);
+        return categoryRepository.findById(id);
     }
 
     public Category create(Category category)
