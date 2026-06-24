@@ -31,58 +31,49 @@ public class ShoppingCartController
     @GetMapping
     public ShoppingCart getCart(Principal principal)
     {
-        String userName = principal.getName();
-
-        User user = userService.getByUserName(userName);
-        int userId = user.getId();
-
-        return shoppingCartService.getByUserId(userId);
+        User user = userService.getByUserName(principal.getName());
+        return shoppingCartService.getByUserId(user.getId());
     }
 
     @PostMapping("/products/{productId}")
-    public ResponseEntity<ShoppingCart> addProductToCart(
+    public ResponseEntity<ShoppingCart> addProduct(
             @PathVariable int productId,
             Principal principal)
     {
-        String userName = principal.getName();
-        User user = userService.getByUserName(userName);
+        User user = userService.getByUserName(principal.getName());
 
         shoppingCartService.addToCart(user.getId(), productId);
 
-        ShoppingCart cart = shoppingCartService.getByUserId(user.getId());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(cart);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(shoppingCartService.getByUserId(user.getId()));
     }
 
     @PutMapping("/products/{productId}")
-    public ResponseEntity<ShoppingCart> updateCartItem(
+    public ResponseEntity<ShoppingCart> updateProduct(
             @PathVariable int productId,
             @RequestBody ShoppingCartItem item,
             Principal principal)
     {
-        String userName = principal.getName();
-        User user = userService.getByUserName(userName);
+        User user = userService.getByUserName(principal.getName());
 
         shoppingCartService.updateQuantity(
                 user.getId(),
                 productId,
                 item.getQuantity());
 
-        ShoppingCart cart = shoppingCartService.getByUserId(user.getId());
-
-        return ResponseEntity.ok(cart);
+        return ResponseEntity.ok(
+                shoppingCartService.getByUserId(user.getId()));
     }
 
     @DeleteMapping
     public ResponseEntity<ShoppingCart> clearCart(Principal principal)
     {
-        String userName = principal.getName();
-        User user = userService.getByUserName(userName);
+        User user = userService.getByUserName(principal.getName());
 
         shoppingCartService.clearCart(user.getId());
 
-        ShoppingCart cart = shoppingCartService.getByUserId(user.getId());
-
-        return ResponseEntity.ok(cart);
+        return ResponseEntity.ok(
+                shoppingCartService.getByUserId(user.getId()));
     }
 }

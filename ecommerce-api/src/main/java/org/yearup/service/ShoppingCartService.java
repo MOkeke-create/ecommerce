@@ -1,6 +1,7 @@
 package org.yearup.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.yearup.models.CartItem;
 import org.yearup.models.Product;
 import org.yearup.models.ShoppingCart;
@@ -12,7 +13,6 @@ import java.util.List;
 @Service
 public class ShoppingCartService
 {
-    // a shopping cart is built from cart rows plus a product lookup for each row
     private final ShoppingCartRepository shoppingCartRepository;
     private final ProductService productService;
 
@@ -27,10 +27,8 @@ public class ShoppingCartService
     {
         ShoppingCart cart = new ShoppingCart();
 
-        // Get all cart rows for this user
         List<CartItem> cartItems = shoppingCartRepository.findByUserId(userId);
 
-        // Build the shopping cart by looking up each product
         for (CartItem cartItem : cartItems)
         {
             Product product = productService.getById(cartItem.getProductId());
@@ -48,7 +46,7 @@ public class ShoppingCartService
         return cart;
     }
 
-    // Add a product to the cart
+    @Transactional
     public void addToCart(int userId, int productId)
     {
         CartItem existing =
@@ -56,12 +54,12 @@ public class ShoppingCartService
 
         if (existing == null)
         {
-            CartItem item = new CartItem();
-            item.setUserId(userId);
-            item.setProductId(productId);
-            item.setQuantity(1);
+            CartItem cartItem = new CartItem();
+            cartItem.setUserId(userId);
+            cartItem.setProductId(productId);
+            cartItem.setQuantity(1);
 
-            shoppingCartRepository.save(item);
+            shoppingCartRepository.save(cartItem);
         }
         else
         {
@@ -70,7 +68,7 @@ public class ShoppingCartService
         }
     }
 
-    // Update the quantity of a product already in the cart
+    @Transactional
     public void updateQuantity(int userId, int productId, int quantity)
     {
         CartItem existing =
@@ -83,7 +81,7 @@ public class ShoppingCartService
         }
     }
 
-    // Remove all items from the user's cart
+    @Transactional
     public void clearCart(int userId)
     {
         shoppingCartRepository.deleteByUserId(userId);
