@@ -9,6 +9,7 @@ import org.yearup.models.Product;
 import org.yearup.service.ProductService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("products")
@@ -54,7 +55,7 @@ public class ProductsController
 
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Product updateProduct(@PathVariable int id, @RequestBody Product product)
+    public Optional<Product> updateProduct(@PathVariable int id, @RequestBody Product product)
     {
         if (productService.getById(id) == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
