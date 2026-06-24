@@ -18,7 +18,6 @@ import java.security.Principal;
 @PreAuthorize("isAuthenticated()")
 public class ShoppingCartController
 {
-    // a shopping cart controller depends on the service layer
     private final ShoppingCartService shoppingCartService;
     private final UserService userService;
 
@@ -32,18 +31,14 @@ public class ShoppingCartController
     @GetMapping
     public ShoppingCart getCart(Principal principal)
     {
-        // get the currently logged in username
         String userName = principal.getName();
 
-        // find database user by username
         User user = userService.getByUserName(userName);
         int userId = user.getId();
 
-        // return the user's shopping cart
         return shoppingCartService.getByUserId(userId);
     }
 
-    // POST /cart/products/{productId}
     @PostMapping("/products/{productId}")
     public ResponseEntity<ShoppingCart> addProductToCart(
             @PathVariable int productId,
@@ -59,7 +54,6 @@ public class ShoppingCartController
         return ResponseEntity.status(HttpStatus.CREATED).body(cart);
     }
 
-    // PUT /cart/products/{productId}
     @PutMapping("/products/{productId}")
     public ResponseEntity<ShoppingCart> updateCartItem(
             @PathVariable int productId,
@@ -79,7 +73,6 @@ public class ShoppingCartController
         return ResponseEntity.ok(cart);
     }
 
-    // DELETE /cart
     @DeleteMapping
     public ResponseEntity<ShoppingCart> clearCart(Principal principal)
     {
