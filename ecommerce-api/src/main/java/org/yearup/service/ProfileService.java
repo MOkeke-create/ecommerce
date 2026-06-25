@@ -7,19 +7,27 @@ import org.yearup.repository.ProfileRepository;
 import java.util.Optional;
 
 @Service
-public class ProfileService {
-
+public class ProfileService
+{
     private final ProfileRepository profileRepository;
 
-    public ProfileService(ProfileRepository profileRepository) {
+    public ProfileService(ProfileRepository profileRepository)
+    {
         this.profileRepository = profileRepository;
     }
 
-    public Optional<Profile> getByUserId(int userId) {
+    public Profile create(Profile profile)
+    {
+        return profileRepository.save(profile);
+    }
+
+    public Optional<Profile> getByUserId(int userId)
+    {
         return profileRepository.findById(userId);
     }
 
-    public Optional<Profile> update(int userId, Profile profile) {
+    public Optional<Profile> update(int userId, Profile profile)
+    {
         return profileRepository.findById(userId)
                 .map(existing -> {
                     existing.setFirstName(profile.getFirstName());
@@ -33,10 +41,5 @@ public class ProfileService {
 
                     return profileRepository.save(existing);
                 });
-    }
-
-    public Profile create(Profile profile)
-    {
-        return profileRepository.save(profile);
     }
 }

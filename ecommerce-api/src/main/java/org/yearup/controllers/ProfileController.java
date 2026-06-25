@@ -1,14 +1,15 @@
 package org.yearup.controllers;
 
+import java.security.Principal;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import org.yearup.models.Profile;
 import org.yearup.models.User;
 import org.yearup.service.ProfileService;
 import org.yearup.service.UserService;
-
-import java.security.Principal;
 
 @RestController
 @RequestMapping("/profile")
@@ -28,26 +29,23 @@ public class ProfileController {
     @GetMapping
     public ResponseEntity<Profile> getProfile(Principal principal) {
 
-        String username = principal.getName();
-
-        User user = userService.getByUserName(username);
+        User user = userService.getByUserName(principal.getName());
 
         return profileService.getByUserId(user.getId())
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)                 // 200 OK
+                .orElse(ResponseEntity.notFound().build()); // 404 if profile doesn't exist
     }
 
-    // PUT /profile
     @PutMapping
-    public ResponseEntity<Profile> updateProfile(Principal principal,
-                                                 @RequestBody Profile profile) {
+    public ResponseEntity<Profile> updateProfile(
+            Principal principal,
+            @RequestBody Profile profile) {
 
-        String username = principal.getName();
-
-        User user = userService.getByUserName(username);
+        User user = userService.getByUserName(principal.getName());
 
         return profileService.update(user.getId(), profile)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)                 // 200 OK
+                .orElse(ResponseEntity.notFound().build()); // 404 if profile doesn't exist
     }
+
 }
